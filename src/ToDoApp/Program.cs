@@ -19,6 +19,7 @@ namespace ToDoApp
         private static async Task Main(string[] args)
         {
             Log.Logger = new LoggerConfiguration()
+                .Enrich.FromLogContext()
                 .WriteTo.Console()
                 .CreateLogger();
             
@@ -52,9 +53,7 @@ namespace ToDoApp
                 .ConfigureLogging(logging =>
                 {
                     logging.ClearProviders();
-                    
-                    logging.AddConsole().SetMinimumLevel(LogLevel.Debug);
-                    
+                    logging.AddSerilog(dispose: true);
                 })
                 .UseConsoleLifetime()
                 .Build();
