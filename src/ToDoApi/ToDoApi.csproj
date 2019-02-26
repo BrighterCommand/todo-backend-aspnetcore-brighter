@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ToDoCore\ToDoCore.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
+    <PackageReference Include="Paramore.Brighter.Extensions.DependencyInjection" Version="1.0.13" />
+    <PackageReference Include="Paramore.Brighter.MessageStore.MsSql" Version="7.4.2" />
+    <PackageReference Include="Paramore.Brighter.MessagingGateway.RMQ" Version="7.4.2" />
+    <PackageReference Include="Paramore.Darker.AspNetCore" Version="1.1.2" />
+  </ItemGroup>
+
+</Project>
