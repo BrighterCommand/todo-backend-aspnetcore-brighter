@@ -10,9 +10,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using MySql.Data.MySqlClient;
 using Paramore.Brighter.Extensions.DependencyInjection;
+using Paramore.Darker.AspNetCore;
 using Polly;
+using Serilog;
 using ToDoCore.Adaptors.Db;
 using ToDoCore.Ports.Commands;
+using ToDoCore.Ports.Queries;
 
 namespace ToDoApi
 {
@@ -38,6 +41,7 @@ namespace ToDoApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddBrighter().AsyncHandlersFromAssemblies(typeof(AddToDoCommand).Assembly);
+            services.AddDarker().AddHandlersFromAssemblies(typeof(ToDoByIdQuery).Assembly);
             
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             
@@ -56,6 +60,8 @@ namespace ToDoApi
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IApplicationLifetime appLifetime)
         {
+            
+            
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
