@@ -1,0 +1,17 @@
+GET http://localhost:8080/api/todo
+Origin: https://www.todobackend.com
+
+
+POST http://localhost:8080/api/todo
+Content-Type: application/json
+Origin: https://www.todobackend.com
+
+{"Title":"blah2","Completed":false,"Order":null}
+
+
+##
+POST http://localhost:5000/api/BulkToDo HTTP/1.1
+Content-Type: application/json
+Accept-Encoding: gzip, deflate
+
+{"ItemsToAdd":[{"Title":"blah","Completed":false,"Order":null}]}
