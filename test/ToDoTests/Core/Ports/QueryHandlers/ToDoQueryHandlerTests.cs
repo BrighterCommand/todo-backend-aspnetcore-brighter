@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 using ToDoCore.Adaptors.Db;
-using ToDoCore.Model;
+using ToDoCore.Domain;
 using ToDoCore.Ports.Queries;
 using ToDoCore.Ports.QueryHandlers;
 

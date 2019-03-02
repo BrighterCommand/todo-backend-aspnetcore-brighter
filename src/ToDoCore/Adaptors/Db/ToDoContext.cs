@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ToDoCore.Model;
+using ToDoCore.Domain;
 
 namespace ToDoCore.Adaptors.Db
 {

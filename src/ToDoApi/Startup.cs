@@ -1,29 +1,23 @@
 using System;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Cors.Internal;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using MySql.Data.MySqlClient;
 using Paramore.Brighter;
 using Paramore.Brighter.Extensions.DependencyInjection;
 using Paramore.Brighter.MessagingGateway.RMQ;
 using Paramore.Darker.AspNetCore;
 using Paramore.Darker.Policies;
 using Paramore.Darker.QueryLogging;
-using Polly;
-using Serilog;
 using ToDoCore.Adaptors.Db;
-using ToDoCore.Ports.Commands;
 using ToDoCore.Ports.Queries;
 
 namespace ToDoApi
 {
-    public partial class Startup
+    public class Startup
     {
         public Startup(IConfiguration configuration)
         {
@@ -31,15 +25,6 @@ namespace ToDoApi
         }
 
         public IConfiguration Configuration { get; }
-
-        private void BuildConfiguration(IHostingEnvironment env)
-        {
-            if (env.IsEnvironment("Development"))
-            {
-                // This will push telemetry data through Application Insights pipeline faster, allowing you to view results immediately.
-            }
-
-        }
 
         // This method gets called by the runtime. Use this method to add services to the container
         public void ConfigureServices(IServiceCollection services)
@@ -66,7 +51,7 @@ namespace ToDoApi
                 .AddDefaultPolicies()
                 .AddJsonQueryLogging();
             
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc();
             
             services.AddCors(options =>
             {

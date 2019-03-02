@@ -1,5 +1,5 @@
 ﻿using Paramore.Darker;
-using ToDoCore.Model;
+using ToDoCore.Domain;
 
 namespace ToDoCore.Ports.Queries
 {

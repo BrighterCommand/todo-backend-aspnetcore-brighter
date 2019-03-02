@@ -1,6 +1,6 @@
 ﻿using ToDoCore.Ports.Repositories;
 
-namespace ToDoCore.Model
+namespace ToDoCore.Domain
 {
     public class ToDoItem : IEntity
     {

@@ -6,7 +6,7 @@ using Paramore.Brighter.Logging.Attributes;
 using Paramore.Brighter.Policies.Attributes;
 using ToDoCore.Adaptors.Db;
 using ToDoCore.Adaptors.Repositories;
-using ToDoCore.Model;
+using ToDoCore.Domain;
 using ToDoCore.Ports.Commands;
 using ToDoCore.Ports.Events;
 
