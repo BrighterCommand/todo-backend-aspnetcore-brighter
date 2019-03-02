@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using ToDoCore.Adaptors.Db;
-using ToDoCore.Model;
+using ToDoCore.Domain;
 using ToDoCore.Ports.Repositories;
 
 namespace ToDoCore.Adaptors.Repositories
