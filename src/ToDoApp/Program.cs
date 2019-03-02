@@ -3,13 +3,12 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Paramore.Brighter;
+using Paramore.Brighter.Extensions.DependencyInjection;
 using Paramore.Brighter.MessagingGateway.RMQ;
-using Paramore.Brighter.MessagingGateway.RMQ.MessagingGatewayConfiguration;
-using Paramore.Brighter.ServiceActivator;
 using Paramore.Brighter.ServiceActivator.Extensions.DependencyInjection;
 using Paramore.Brighter.ServiceActivator.Extensions.Hosting;
 using Serilog;
-using ToDoCore.Ports.Commands;
 using ToDoCore.Ports.Events;
 
 namespace ToDoApp
@@ -29,7 +28,8 @@ namespace ToDoApp
                 {
                     var connections = new Connection[]
                     {
-                        new Connection<TaskCreatedEvent>(isAsync: true)
+                        new Connection<TaskCreatedEvent>(routingKey: new RoutingKey(nameof(TaskCreatedEvent)) , isAsync: true),
+                        new Connection<TaskCreatedEvent>(routingKey: new RoutingKey(nameof(TaskCompletedEvent)) , isAsync: true)
                     };
 
                     var rmqConnection = new RmqMessagingGatewayConnection
@@ -43,10 +43,9 @@ namespace ToDoApp
                     services.AddServiceActivator(options =>
                         {
                             options.Connections = connections;
-                            options.ChannelFactory = new InputChannelFactory(rmqMessageConsumerFactory);
-                        })
-                        .MapperRegistryFromAssemblies(typeof(AddToDoCommand).Assembly)
-                        .HandlersFromAssemblies(typeof(AddToDoCommand).Assembly);
+                            options.ChannelFactory = new ChannelFactory(rmqMessageConsumerFactory);
+                            options.BrighterMessaging = new BrighterMessaging(new InMemoryMessageStore(), new RmqMessageProducer(rmqConnection));
+                        }).AutoFromAssemblies();
 
                     services.AddHostedService<ServiceActivatorHostedService>();
                 })

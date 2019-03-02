@@ -8,7 +8,7 @@ namespace ToDoCore.Ports.Mappers
     {
         public Message MapToMessage(TaskCreatedEvent request)
         {
-            var header = new MessageHeader(messageId: request.Id, topic: "taskcreated.event", messageType: MessageType.MT_EVENT);
+            var header = new MessageHeader(request.Id, nameof(TaskCreatedEvent), MessageType.MT_EVENT);
             var body = new MessageBody(JsonConvert.SerializeObject(request));
             var message = new Message(header, body);
             return message;

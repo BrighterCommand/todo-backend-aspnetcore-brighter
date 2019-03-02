@@ -1,18 +1,18 @@
-﻿using Darker;
+﻿using Paramore.Darker;
 using ToDoCore.Model;
 
 namespace ToDoCore.Ports.Queries
 {
-    public class ToDoByIdQuery : IQueryRequest<ToDoByIdQuery.Result>
+    public class ToDoByIdQuery : IQuery<ToDoByIdQuery.Result>
     {
-        public int Id { get; }
-
         public ToDoByIdQuery(int id)
         {
             Id = id;
         }
 
-        public sealed class Result : IQueryResponse
+        public int Id { get; }
+
+        public sealed class Result
         {
             public Result(int id, string title)
             {

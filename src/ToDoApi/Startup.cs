@@ -9,8 +9,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using MySql.Data.MySqlClient;
+using Paramore.Brighter;
 using Paramore.Brighter.Extensions.DependencyInjection;
+using Paramore.Brighter.MessagingGateway.RMQ;
 using Paramore.Darker.AspNetCore;
+using Paramore.Darker.Policies;
+using Paramore.Darker.QueryLogging;
 using Polly;
 using Serilog;
 using ToDoCore.Adaptors.Db;
@@ -40,8 +44,27 @@ namespace ToDoApi
         // This method gets called by the runtime. Use this method to add services to the container
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddBrighter().AsyncHandlersFromAssemblies(typeof(AddToDoCommand).Assembly);
-            services.AddDarker().AddHandlersFromAssemblies(typeof(ToDoByIdQuery).Assembly);
+            services.AddDbContext<ToDoContext>(options =>
+                options.UseNpgsql("Host=localhost;Database=ToDoDB;Username=postgres;Password=password"));
+            
+            var rmqMessagingGatewayConnection = new RmqMessagingGatewayConnection()
+            {
+                Name = nameof(ToDoApi),
+                AmpqUri = new AmqpUriSpecification(new Uri("amqp://guest:guest@localhost:5672")),
+                Exchange = new Exchange("todo.backend.exchange")
+            };
+            
+            services.AddBrighter(options =>
+                {
+                    options.BrighterMessaging = new BrighterMessaging(new InMemoryMessageStore(),
+                            new RmqMessageProducer(rmqMessagingGatewayConnection));
+                })
+                .AutoFromAssemblies();
+            
+            services.AddDarker()
+                .AddHandlersFromAssemblies(typeof(ToDoByIdQuery).Assembly)
+                .AddDefaultPolicies()
+                .AddJsonQueryLogging();
             
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             
@@ -58,10 +81,8 @@ namespace ToDoApi
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IApplicationLifetime appLifetime)
+        public void Configure(IApplicationBuilder app, ToDoContext context)
         {
-            
-            
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
@@ -69,6 +90,8 @@ namespace ToDoApi
 
             app.UseCors("AllowAll");
             app.UseMvc();
+            
+            context.Database.EnsureCreated();
         }
     }
 }

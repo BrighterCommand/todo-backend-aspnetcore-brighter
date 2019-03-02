@@ -8,7 +8,7 @@ using ToDoCore.Adaptors.Db;
 using ToDoCore.Adaptors.Repositories;
 using ToDoCore.Ports.Commands;
 
-namespace ToDoCore.Ports.Handlers
+namespace ToDoCore.Ports.CommandHandlers
 {
     public class DeleteAllToDosCommandHandlerAsync : RequestHandlerAsync<DeleteAllToDosCommand>
     {
@@ -19,18 +19,19 @@ namespace ToDoCore.Ports.Handlers
             _options = options;
         }
 
-        [RequestLoggingAsync(step: 1, timing: HandlerTiming.Before)]
-        [UsePolicyAsync(policy: CommandProcessor.CIRCUITBREAKERASYNC, step:2)]
-        [UsePolicyAsync(policy: CommandProcessor.RETRYPOLICYASYNC, step: 3)]
-        public override async Task<DeleteAllToDosCommand> HandleAsync(DeleteAllToDosCommand command, CancellationToken cancellationToken = new CancellationToken())
+        [RequestLoggingAsync(1, HandlerTiming.Before)]
+        [UsePolicyAsync(CommandProcessor.CIRCUITBREAKERASYNC, 2)]
+        [UsePolicyAsync(CommandProcessor.RETRYPOLICYASYNC, 3)]
+        public override async Task<DeleteAllToDosCommand> HandleAsync(DeleteAllToDosCommand command,
+            CancellationToken cancellationToken = new CancellationToken())
         {
             using (var uow = new ToDoContext(_options))
             {
                 var repository = new ToDoItemRepositoryAsync(uow);
                 await repository.DeleteAllAsync(cancellationToken);
-           }
+            }
 
-            return  await base.HandleAsync(command, cancellationToken);
+            return await base.HandleAsync(command, cancellationToken);
         }
     }
 }

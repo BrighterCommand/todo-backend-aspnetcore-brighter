@@ -10,9 +10,8 @@ namespace ToDoCore.Ports.Events
             Title = title;
             Completed = false;
         }
-        
+
         public string Title { get; }
         public bool Completed { get; }
-        
     }
 }

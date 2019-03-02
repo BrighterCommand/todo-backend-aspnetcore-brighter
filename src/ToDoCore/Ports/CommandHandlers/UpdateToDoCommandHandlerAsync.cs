@@ -9,23 +9,25 @@ using ToDoCore.Adaptors.Repositories;
 using ToDoCore.Ports.Commands;
 using ToDoCore.Ports.Events;
 
-namespace ToDoCore.Ports.Handlers
+namespace ToDoCore.Ports.CommandHandlers
 {
     public class UpdateToDoCommandHandlerAsync : RequestHandlerAsync<UpdateToDoCommand>
     {
-        private readonly DbContextOptions<ToDoContext> _options;
         private readonly IAmACommandProcessor _commandProcessor;
+        private readonly DbContextOptions<ToDoContext> _options;
 
-        public UpdateToDoCommandHandlerAsync(DbContextOptions<ToDoContext> options, IAmACommandProcessor commandProcessor)
+        public UpdateToDoCommandHandlerAsync(DbContextOptions<ToDoContext> options,
+            IAmACommandProcessor commandProcessor)
         {
             _options = options;
             _commandProcessor = commandProcessor;
         }
 
-        [RequestLoggingAsync(step: 1, timing: HandlerTiming.Before)]
-        [UsePolicyAsync(policy: CommandProcessor.CIRCUITBREAKERASYNC, step:2)]
-        [UsePolicyAsync(policy: CommandProcessor.RETRYPOLICYASYNC, step: 3)]
-        public override async Task<UpdateToDoCommand> HandleAsync(UpdateToDoCommand command, CancellationToken cancellationToken = new CancellationToken())
+        [RequestLoggingAsync(1, HandlerTiming.Before)]
+        [UsePolicyAsync(CommandProcessor.CIRCUITBREAKERASYNC, 2)]
+        [UsePolicyAsync(CommandProcessor.RETRYPOLICYASYNC, 3)]
+        public override async Task<UpdateToDoCommand> HandleAsync(UpdateToDoCommand command,
+            CancellationToken cancellationToken = new CancellationToken())
         {
             string title;
 

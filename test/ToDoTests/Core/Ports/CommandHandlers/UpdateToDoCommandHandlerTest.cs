@@ -4,17 +4,16 @@ using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 using ToDoCore.Adaptors.Db;
 using ToDoCore.Model;
+using ToDoCore.Ports.CommandHandlers;
 using ToDoCore.Ports.Commands;
-using ToDoCore.Ports.Handlers;
 
-namespace ToDoTests.Core.Ports.Handlers
+namespace ToDoTests.Core.Ports.CommandHandlers
 {
     public class UpdateToDoCommandHandlerTest
     {
         [Test]
         public async Task Test_Updating_a_ToDo_Title()
         {
-
             /*
                 Given that I have a command to update a ToDo's title
                 When I handle that command
@@ -24,10 +23,10 @@ namespace ToDoTests.Core.Ports.Handlers
             const string TODO_TITLE = "test_title";
 
             var options = new DbContextOptionsBuilder<ToDoContext>()
-                .UseInMemoryDatabase(databaseName: "title_writes_to_database")
+                .UseInMemoryDatabase("title_writes_to_database")
                 .Options;
 
-            var toDoItem = new ToDoItem() { Title = "This title will be changed" };
+            var toDoItem = new ToDoItem {Title = "This title will be changed"};
             using (var context = new ToDoContext(options))
             {
                 context.ToDoItems.Add(toDoItem);
@@ -36,7 +35,7 @@ namespace ToDoTests.Core.Ports.Handlers
 
             var fakeCommandProcessor = new FakeCommandProcessor();
 
-            var command = new UpdateToDoCommand(toDoItem.Id, title: TODO_TITLE);
+            var command = new UpdateToDoCommand(toDoItem.Id, TODO_TITLE);
             var handler = new UpdateToDoCommandHandlerAsync(options, fakeCommandProcessor);
 
             await handler.HandleAsync(command);
@@ -55,7 +54,6 @@ namespace ToDoTests.Core.Ports.Handlers
         [Test]
         public async Task Test_Updating_a_ToDo_Completed()
         {
-
             /*
                 Given that I have a command to update a ToDo's complete
                 When I handle that command
@@ -64,12 +62,12 @@ namespace ToDoTests.Core.Ports.Handlers
             */
 
             var options = new DbContextOptionsBuilder<ToDoContext>()
-                .UseInMemoryDatabase(databaseName: "completed_writes_to_database")
+                .UseInMemoryDatabase("completed_writes_to_database")
                 .Options;
 
             var fakeCommandProcessor = new FakeCommandProcessor();
 
-            var toDoItem = new ToDoItem() { Title = "This title won't be changed" };
+            var toDoItem = new ToDoItem {Title = "This title won't be changed"};
             using (var context = new ToDoContext(options))
             {
                 context.ToDoItems.Add(toDoItem);
@@ -95,7 +93,6 @@ namespace ToDoTests.Core.Ports.Handlers
         [Test]
         public async Task Test_Updating_a_ToDo_Title_and_Completed()
         {
-
             /*
                 Given that I have a command to pdate add a ToDo's Title and Completed
                 When I handle that command
@@ -106,12 +103,12 @@ namespace ToDoTests.Core.Ports.Handlers
             const string TODO_TITLE = "test_title";
 
             var options = new DbContextOptionsBuilder<ToDoContext>()
-                .UseInMemoryDatabase(databaseName: "titlecompleted_writes_to_database")
+                .UseInMemoryDatabase("titlecompleted_writes_to_database")
                 .Options;
 
             var fakeCommandProcessor = new FakeCommandProcessor();
 
-            var toDoItem = new ToDoItem() { Title = "This title will be changed" };
+            var toDoItem = new ToDoItem {Title = "This title will be changed"};
             using (var context = new ToDoContext(options))
             {
                 context.ToDoItems.Add(toDoItem);
@@ -119,7 +116,7 @@ namespace ToDoTests.Core.Ports.Handlers
             }
 
 
-            var command = new UpdateToDoCommand(toDoItem.Id, title: TODO_TITLE, complete: true);
+            var command = new UpdateToDoCommand(toDoItem.Id, TODO_TITLE, true);
             var handler = new UpdateToDoCommandHandlerAsync(options, fakeCommandProcessor);
 
             await handler.HandleAsync(command);
@@ -148,12 +145,12 @@ namespace ToDoTests.Core.Ports.Handlers
             const int NEW_ORDER = 523;
 
             var options = new DbContextOptionsBuilder<ToDoContext>()
-                .UseInMemoryDatabase(databaseName: "order_writes_to_database")
+                .UseInMemoryDatabase("order_writes_to_database")
                 .Options;
-            
+
             var fakeCommandProcessor = new FakeCommandProcessor();
 
-            var toDoItem = new ToDoItem() { Title = "This title won't be changed", Completed = true, Order = 10};
+            var toDoItem = new ToDoItem {Title = "This title won't be changed", Completed = true, Order = 10};
             using (var context = new ToDoContext(options))
             {
                 context.ToDoItems.Add(toDoItem);
@@ -193,12 +190,12 @@ namespace ToDoTests.Core.Ports.Handlers
             const int NEW_ORDER = 523;
 
             var options = new DbContextOptionsBuilder<ToDoContext>()
-                .UseInMemoryDatabase(databaseName: "order_title_completed_writes_to_database")
+                .UseInMemoryDatabase("order_title_completed_writes_to_database")
                 .Options;
 
             var fakeCommandProcessor = new FakeCommandProcessor();
 
-            var toDoItem = new ToDoItem() { Title = "Title", Completed = true, Order = 10};
+            var toDoItem = new ToDoItem {Title = "Title", Completed = true, Order = 10};
             using (var context = new ToDoContext(options))
             {
                 context.ToDoItems.Add(toDoItem);
@@ -206,7 +203,7 @@ namespace ToDoTests.Core.Ports.Handlers
             }
 
 
-            var command = new UpdateToDoCommand(toDoItem.Id, title:NEW_TITLE, complete: NEW_COMPLETED, order: NEW_ORDER);
+            var command = new UpdateToDoCommand(toDoItem.Id, NEW_TITLE, NEW_COMPLETED, NEW_ORDER);
             var handler = new UpdateToDoCommandHandlerAsync(options, fakeCommandProcessor);
 
             await handler.HandleAsync(command);
@@ -218,6 +215,7 @@ namespace ToDoTests.Core.Ports.Handlers
                 Assert.AreEqual(NEW_COMPLETED, context.ToDoItems.Single().Completed);
                 Assert.AreEqual(NEW_ORDER, context.ToDoItems.Single().Order);
             }
+
             // Should not send task complete event
             Assert.IsFalse(fakeCommandProcessor.SentCompletedEvent);
         }

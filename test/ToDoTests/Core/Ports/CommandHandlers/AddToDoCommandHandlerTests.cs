@@ -3,10 +3,10 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 using ToDoCore.Adaptors.Db;
+using ToDoCore.Ports.CommandHandlers;
 using ToDoCore.Ports.Commands;
-using ToDoCore.Ports.Handlers;
 
-namespace ToDoTests.Core.Ports.Handlers
+namespace ToDoTests.Core.Ports.CommandHandlers
 {
     [TestFixture]
     public class AddToDoCommandHandlerFixture
@@ -24,12 +24,12 @@ namespace ToDoTests.Core.Ports.Handlers
             const int ORDER_NUM = 10;
 
             var fakeCommandProcessor = new FakeCommandProcessor();
-            
+
             var options = new DbContextOptionsBuilder<ToDoContext>()
-                .UseInMemoryDatabase(databaseName: "Add_writes_to_database")
+                .UseInMemoryDatabase("Add_writes_to_database")
                 .Options;
 
-            var command = new AddToDoCommand(title:TODO_TITLE, completed: true, order: ORDER_NUM) ;
+            var command = new AddToDoCommand(TODO_TITLE, true, ORDER_NUM);
             var handler = new AddToDoCommandHandlerAsync(options, fakeCommandProcessor);
 
             await handler.HandleAsync(command);
@@ -39,9 +39,9 @@ namespace ToDoTests.Core.Ports.Handlers
                 Assert.AreEqual(1, context.ToDoItems.Count());
                 Assert.AreEqual(TODO_TITLE, context.ToDoItems.Single().Title);
                 Assert.AreEqual(true, context.ToDoItems.Single().Completed);
-                Assert.AreEqual(ORDER_NUM,  context.ToDoItems.Single().Order.Value);
+                Assert.AreEqual(ORDER_NUM, context.ToDoItems.Single().Order.Value);
             }
-            
+
             Assert.IsTrue(fakeCommandProcessor.SentCreatedEvent);
         }
     }

@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
-using Darker;
+using Paramore.Darker;
 
 namespace ToDoCore.Ports.Queries
 {
-    public class ToDoQueryAll : IQueryRequest<ToDoQueryAll.Result>
+    public class ToDoQueryAll : IQuery<ToDoQueryAll.Result>
     {
         public ToDoQueryAll(int pageNumber, int pageSize)
         {
@@ -14,14 +14,14 @@ namespace ToDoCore.Ports.Queries
         public int PageNumber { get; }
         public int PageSize { get; }
 
-        public sealed class Result : IQueryResponse
+        public sealed class Result
         {
-            public IEnumerable<ToDoByIdQuery.Result> ToDoItems { get; }
-
             public Result(IEnumerable<ToDoByIdQuery.Result> items)
             {
                 ToDoItems = items;
             }
+
+            public IEnumerable<ToDoByIdQuery.Result> ToDoItems { get; }
         }
     }
 }

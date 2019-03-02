@@ -4,10 +4,10 @@ using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 using ToDoCore.Adaptors.Db;
 using ToDoCore.Model;
-using ToDoCore.Ports.Handlers;
 using ToDoCore.Ports.Queries;
+using ToDoCore.Ports.QueryHandlers;
 
-namespace ToDoTests.Core.Ports.Handlers
+namespace ToDoTests.Core.Ports.QueryHandlers
 {
     [TestFixture]
     public class ToDoQueryHandlerTests
@@ -22,10 +22,10 @@ namespace ToDoTests.Core.Ports.Handlers
 
             */
             var options = new DbContextOptionsBuilder<ToDoContext>()
-                .UseInMemoryDatabase(databaseName: "Retrieving_tasks_from_database")
+                .UseInMemoryDatabase("Retrieving_tasks_from_database")
                 .Options;
 
-            var toDoItem = new ToDoItem(){Title = "Make test pass", Completed = false, Order=523};
+            var toDoItem = new ToDoItem {Title = "Make test pass", Completed = false, Order = 523};
             using (var context = new ToDoContext(options))
             {
                 context.ToDoItems.Add(toDoItem);
@@ -39,7 +39,6 @@ namespace ToDoTests.Core.Ports.Handlers
             Assert.AreEqual(toDoItem.Title, task.Title);
             Assert.AreEqual(toDoItem.Completed, task.Completed);
             Assert.AreEqual(toDoItem.Order.Value, task.Order.Value);
-
         }
 
         [Test]
@@ -53,27 +52,24 @@ namespace ToDoTests.Core.Ports.Handlers
 
             */
             var options = new DbContextOptionsBuilder<ToDoContext>()
-                .UseInMemoryDatabase(databaseName: "Retrieving_tasks_from_database")
+                .UseInMemoryDatabase("Retrieving_tasks_from_database")
                 .Options;
 
             using (var context = new ToDoContext(options))
             {
-                context.ToDoItems.Add(new ToDoItem(){Title = "Make test pass"});
-                context.ToDoItems.Add(new ToDoItem(){Title = "Make test pass"});
-                context.ToDoItems.Add(new ToDoItem(){Title = "Make test pass"});
-                context.ToDoItems.Add(new ToDoItem(){Title = "Make test pass"});
-                context.ToDoItems.Add(new ToDoItem(){Title = "Make test pass"});
+                context.ToDoItems.Add(new ToDoItem {Title = "Make test pass"});
+                context.ToDoItems.Add(new ToDoItem {Title = "Make test pass"});
+                context.ToDoItems.Add(new ToDoItem {Title = "Make test pass"});
+                context.ToDoItems.Add(new ToDoItem {Title = "Make test pass"});
+                context.ToDoItems.Add(new ToDoItem {Title = "Make test pass"});
                 context.SaveChanges();
             }
 
             var retriever = new ToDoQueryAllHandlerAsync(options);
             var request = await retriever.ExecuteAsync(new ToDoQueryAll(1, 3));
             Assert.AreEqual(request.ToDoItems.Count(), 3);
-            request = retriever.Execute(new ToDoQueryAll(2, 3));   //only two available on this page
+            request = retriever.Execute(new ToDoQueryAll(2, 3)); //only two available on this page
             Assert.AreEqual(request.ToDoItems.Count(), 2);
-
-
-
         }
     }
 }
