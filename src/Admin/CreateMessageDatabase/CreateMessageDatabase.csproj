@@ -16,8 +16,8 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.CommandLineUtils" Version="1.1.1" />
-    <PackageReference Include="Paramore.Brighter" Version="7.1.43" />
-    <PackageReference Include="Paramore.Brighter.MessageStore.MySql" Version="7.1.43-beta" />
+    <PackageReference Include="Paramore.Brighter" Version="8.0.37" />
+    <PackageReference Include="Paramore.Brighter.MessageStore.MySql" Version="8.0.37" />
   </ItemGroup>
 
 </Project>

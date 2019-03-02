@@ -10,12 +10,12 @@ using ToDoCore.Model;
 using ToDoCore.Ports.Commands;
 using ToDoCore.Ports.Events;
 
-namespace ToDoCore.Ports.Handlers
+namespace ToDoCore.Ports.CommandHandlers
 {
     public class AddToDoCommandHandlerAsync : RequestHandlerAsync<AddToDoCommand>
     {
-        private readonly DbContextOptions<ToDoContext> _options;
         private readonly IAmACommandProcessor _commandProcessor;
+        private readonly DbContextOptions<ToDoContext> _options;
 
         public AddToDoCommandHandlerAsync(DbContextOptions<ToDoContext> options, IAmACommandProcessor commandProcessor)
         {
@@ -23,16 +23,17 @@ namespace ToDoCore.Ports.Handlers
             _commandProcessor = commandProcessor;
         }
 
-        [RequestLoggingAsync(step: 1, timing: HandlerTiming.Before)]
-        [UsePolicyAsync(policy: CommandProcessor.CIRCUITBREAKERASYNC, step:2)]
-        [UsePolicyAsync(policy: CommandProcessor.RETRYPOLICYASYNC, step: 3)]
-        public override async Task<AddToDoCommand> HandleAsync(AddToDoCommand command, CancellationToken cancellationToken = new CancellationToken())
+        [RequestLoggingAsync(1, HandlerTiming.Before)]
+        [UsePolicyAsync(CommandProcessor.CIRCUITBREAKERASYNC, 2)]
+        [UsePolicyAsync(CommandProcessor.RETRYPOLICYASYNC, 3)]
+        public override async Task<AddToDoCommand> HandleAsync(AddToDoCommand command,
+            CancellationToken cancellationToken = new CancellationToken())
         {
             using (var uow = new ToDoContext(_options))
             {
                 var repository = new ToDoItemRepositoryAsync(uow);
                 var savedItem = await repository.AddAsync(
-                    new ToDoItem {Title = command.Title, Completed = command.Commpleted, Order = command.Order},
+                    new ToDoItem {Title = command.Title, Completed = command.Completed, Order = command.Order},
                     cancellationToken
                 );
                 command.ToDoItemId = savedItem.Id;

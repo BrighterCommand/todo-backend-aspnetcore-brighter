@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
-using Darker;
 using Microsoft.AspNetCore.Mvc;
 using Paramore.Brighter;
+using Paramore.Darker;
 using ToDoCore.Ports.Commands;
 using ToDoCore.Ports.Queries;
 using ToDoCore.ViewModels;
@@ -39,11 +39,13 @@ namespace ToDoApi.Controllers
         public async Task<IActionResult> GetById(int id)
         {
             var toDo = await _queryProcessor.ExecuteAsync(new ToDoByIdQuery(id));
+
+            if (toDo == null)
+                return NotFound();
+            
             toDo.Url = Url.RouteUrl("GetTodo", new { id = toDo.Id }, protocol: Request.Scheme);
 
             return Ok(toDo);
-
-            //TODO: Needs error handling for Not Found etc.
         }
 
         [HttpPost]
