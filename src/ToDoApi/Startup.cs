@@ -12,6 +12,8 @@ using Paramore.Brighter.MessagingGateway.RMQ;
 using Paramore.Darker.AspNetCore;
 using Paramore.Darker.Policies;
 using Paramore.Darker.QueryLogging;
+using Polly;
+using Polly.Registry;
 using ToDoCore.Adaptors.Db;
 using ToDoCore.Ports.Queries;
 
@@ -38,17 +40,42 @@ namespace ToDoApi
                 AmpqUri = new AmqpUriSpecification(new Uri("amqp://guest:guest@localhost:5672")),
                 Exchange = new Exchange("todo.backend.exchange")
             };
+
+            var asyncRetryPolicy = Policy.Handle<Exception>().WaitAndRetryAsync(new[]
+            {
+                TimeSpan.FromMilliseconds(50), TimeSpan.FromMilliseconds(100),
+                TimeSpan.FromMilliseconds(150)
+            });
+            var asyncCircuitBreakerPolicy = Policy.Handle<Exception>().CircuitBreakerAsync(10, new TimeSpan(5000));
+
+            var brighterPolicy = new Polly.Registry.PolicyRegistry
+            {
+                { CommandProcessor.CIRCUITBREAKER, Policy.Handle<Exception>().CircuitBreaker(10, new TimeSpan(5000)) },
+                { CommandProcessor.CIRCUITBREAKERASYNC, asyncCircuitBreakerPolicy },
+                { CommandProcessor.RETRYPOLICY,
+                    Policy.Handle<Exception>().WaitAndRetry(new[]
+                    {
+                        TimeSpan.FromMilliseconds(50), TimeSpan.FromMilliseconds(100),
+                        TimeSpan.FromMilliseconds(150)
+                    })
+                },
+                { CommandProcessor.RETRYPOLICYASYNC, asyncRetryPolicy },
+                { Paramore.Darker.Policies.Constants.RetryPolicyName, asyncRetryPolicy},
+                { Paramore.Darker.Policies.Constants.CircuitBreakerPolicyName, asyncCircuitBreakerPolicy}
+            };
+
             
             services.AddBrighter(options =>
-                {
-                    options.BrighterMessaging = new BrighterMessaging(new InMemoryMessageStore(),
-                            new RmqMessageProducer(rmqMessagingGatewayConnection));
-                })
-                .AutoFromAssemblies();
+            {
+                options.BrighterMessaging = new BrighterMessaging(new InMemoryMessageStore(), new RmqMessageProducer(rmqMessagingGatewayConnection));
+                options.PolicyRegistry = brighterPolicy;
+                //EFCore by default registers Context as scoped, which forces the CommandProcessorLifetime to also be scoped
+                options.CommandProcessorLifetime = ServiceLifetime.Scoped;
+            }).AutoFromAssemblies();
             
             services.AddDarker()
                 .AddHandlersFromAssemblies(typeof(ToDoByIdQuery).Assembly)
-                .AddDefaultPolicies()
+                .AddPolicies(brighterPolicy)
                 .AddJsonQueryLogging();
             
             services.AddMvc();
