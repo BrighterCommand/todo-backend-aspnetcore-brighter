@@ -27,9 +27,9 @@ namespace ToDoCore.Ports.QueryHandlers
             using (var uow = new ToDoContext(_options))
             {
                 var items = await uow.ToDoItems
-                    //.Skip(request.PageNumber - 1 * request.PageSize)
-                    // .Take(request.PageSize)
-                    .Select(i => new ToDoByIdQuery.Result(i)).ToListAsync();
+                    .Skip(request.PageNumber - 1 * request.PageSize)
+                    .Take(request.PageSize)
+                    .Select(i => new ToDoByIdQuery.Result(i)).ToListAsync(cancellationToken: cancellationToken);
 
                 return new ToDoQueryAll.Result(items);
             }

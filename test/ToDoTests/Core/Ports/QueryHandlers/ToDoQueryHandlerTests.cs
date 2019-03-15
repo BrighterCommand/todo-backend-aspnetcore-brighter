@@ -13,7 +13,7 @@ namespace ToDoTests.Core.Ports.QueryHandlers
     public class ToDoQueryHandlerTests
     {
         [Test]
-        public async Task Test_Retrieveing_A_Task()
+        public async Task Test_Retrieving_A_Task()
         {
             /*
                 Given that I have a database with a ToDo
@@ -42,13 +42,12 @@ namespace ToDoTests.Core.Ports.QueryHandlers
         }
 
         [Test]
-        [Ignore("Skip and take not working under EF Core")]
         public async Task Test_Retrieving_All_Tasks()
         {
             /*
                 Given that I have a database with many ToDos
                 When I retrieve a a page of those todos
-                Then I should get an interable view model for them
+                Then I should get an iterable view model for them
 
             */
             var options = new DbContextOptionsBuilder<ToDoContext>()
@@ -57,18 +56,18 @@ namespace ToDoTests.Core.Ports.QueryHandlers
 
             using (var context = new ToDoContext(options))
             {
-                context.ToDoItems.Add(new ToDoItem {Title = "Make test pass"});
-                context.ToDoItems.Add(new ToDoItem {Title = "Make test pass"});
-                context.ToDoItems.Add(new ToDoItem {Title = "Make test pass"});
-                context.ToDoItems.Add(new ToDoItem {Title = "Make test pass"});
-                context.ToDoItems.Add(new ToDoItem {Title = "Make test pass"});
+                context.ToDoItems.Add(new ToDoItem {Title = "Make test pass 1"});
+                context.ToDoItems.Add(new ToDoItem {Title = "Make test pass 2"});
+                context.ToDoItems.Add(new ToDoItem {Title = "Make test pass 3"});
+                context.ToDoItems.Add(new ToDoItem {Title = "Make test pass 4"});
+                context.ToDoItems.Add(new ToDoItem {Title = "Make test pass 5"});
                 context.SaveChanges();
             }
 
             var retriever = new ToDoQueryAllHandlerAsync(options);
             var request = await retriever.ExecuteAsync(new ToDoQueryAll(1, 3));
             Assert.AreEqual(request.ToDoItems.Count(), 3);
-            request = retriever.Execute(new ToDoQueryAll(2, 3)); //only two available on this page
+            request = await retriever.ExecuteAsync(new ToDoQueryAll(2, 3));
             Assert.AreEqual(request.ToDoItems.Count(), 2);
         }
     }
