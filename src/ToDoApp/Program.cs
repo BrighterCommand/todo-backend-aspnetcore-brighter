@@ -29,7 +29,7 @@ namespace ToDoApp
                     var connections = new Connection[]
                     {
                         new Connection<TaskCreatedEvent>(routingKey: new RoutingKey(nameof(TaskCreatedEvent)) , isAsync: true),
-                        new Connection<TaskCreatedEvent>(routingKey: new RoutingKey(nameof(TaskCompletedEvent)) , isAsync: true)
+                        new Connection<TaskCompletedEvent>(routingKey: new RoutingKey(nameof(TaskCompletedEvent)) , isAsync: true)
                     };
 
                     var rmqConnection = new RmqMessagingGatewayConnection
