@@ -10,6 +10,7 @@ using Paramore.Brighter.ServiceActivator.Extensions.DependencyInjection;
 using Paramore.Brighter.ServiceActivator.Extensions.Hosting;
 using Serilog;
 using ToDoCore.Ports.Events;
+using ToDoCore.Ports.Mappers;
 
 namespace ToDoApp
 {
@@ -45,7 +46,7 @@ namespace ToDoApp
                             options.Connections = connections;
                             options.ChannelFactory = new ChannelFactory(rmqMessageConsumerFactory);
                             options.BrighterMessaging = new BrighterMessaging(new InMemoryMessageStore(), new RmqMessageProducer(rmqConnection));
-                        }).AutoFromAssemblies();
+                        }).AutoFromAssemblies().MapperRegistry(registry => registry.Register<TaskCreatedEvent, GenericMessageMapper<TaskCreatedEvent>>());
 
                     services.AddHostedService<ServiceActivatorHostedService>();
                 })
