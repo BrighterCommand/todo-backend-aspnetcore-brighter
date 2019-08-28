@@ -66,9 +66,9 @@ namespace ToDoTests.Core.Ports.QueryHandlers
 
             var retriever = new ToDoQueryAllHandlerAsync(options);
             var request = await retriever.ExecuteAsync(new ToDoQueryAll(1, 3));
-            Assert.AreEqual(request.ToDoItems.Count(), 3);
+            Assert.AreEqual(3, request.ToDoItems.Count());
             request = await retriever.ExecuteAsync(new ToDoQueryAll(2, 3));
-            Assert.AreEqual(request.ToDoItems.Count(), 2);
+            Assert.AreEqual(2, request.ToDoItems.Count());
         }
     }
 }
