@@ -17,19 +17,15 @@ namespace ToDoApp
     {
         private static async Task Main(string[] args)
         {
-            Log.Logger = new LoggerConfiguration()
-                .Enrich.FromLogContext()
-                .WriteTo.Console()
-                .CreateLogger();
             
             var host = new HostBuilder()
                 .ConfigureServices((hostContext, services) =>
 
                 {
-                    var connections = new Connection[]
+                    var subscriptions = new RmqSubscription[]
                     {
-                        new Connection<TaskCreatedEvent>(routingKey: new RoutingKey(nameof(TaskCreatedEvent)) , isAsync: true),
-                        new Connection<TaskCompletedEvent>(routingKey: new RoutingKey(nameof(TaskCompletedEvent)) , isAsync: true)
+                        new RmqSubscription<TaskCreatedEvent>(routingKey: new RoutingKey(nameof(TaskCreatedEvent)), runAsync:true),
+                        new RmqSubscription<TaskCompletedEvent>(routingKey: new RoutingKey(nameof(TaskCompletedEvent)), runAsync: true)
                     };
 
                     var rmqConnection = new RmqMessagingGatewayConnection
@@ -42,18 +38,15 @@ namespace ToDoApp
 
                     services.AddServiceActivator(options =>
                         {
-                            options.Connections = connections;
+                            options.Subscriptions = subscriptions;
                             options.ChannelFactory = new ChannelFactory(rmqMessageConsumerFactory);
-                            options.BrighterMessaging = new BrighterMessaging(new InMemoryMessageStore(), new RmqMessageProducer(rmqConnection));
-                        }).AutoFromAssemblies();
+                        })
+                        .UseInMemoryOutbox()
+                        .AutoFromAssemblies();
 
                     services.AddHostedService<ServiceActivatorHostedService>();
-                })
-                .ConfigureLogging(logging =>
-                {
-                    logging.ClearProviders();
-                    logging.AddSerilog(dispose: true);
-                })
+                }).ConfigureLogging(builder => 
+                    builder.AddConsole())
                 .UseConsoleLifetime()
                 .Build();
 

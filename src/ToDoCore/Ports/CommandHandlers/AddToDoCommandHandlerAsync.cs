@@ -29,7 +29,7 @@ namespace ToDoCore.Ports.CommandHandlers
         public override async Task<AddToDoCommand> HandleAsync(AddToDoCommand command,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            using (var uow = new ToDoContext(_options))
+            await using (var uow = new ToDoContext(_options))
             {
                 var repository = new ToDoItemRepositoryAsync(uow);
                 var savedItem = await repository.AddAsync(

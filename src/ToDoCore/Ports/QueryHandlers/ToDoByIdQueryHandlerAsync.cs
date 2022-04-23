@@ -22,14 +22,10 @@ namespace ToDoCore.Ports.QueryHandlers
 
         [QueryLogging(0)]
         [RetryableQuery(1)]
-        public override async Task<ToDoByIdQuery.Result> ExecuteAsync(ToDoByIdQuery request,
-            CancellationToken cancellationToken = default(CancellationToken))
+        public override async Task<ToDoByIdQuery.Result> ExecuteAsync(ToDoByIdQuery request, CancellationToken cancellationToken = default)
         {
-            using (var uow = new ToDoContext(_options))
-            {
-                return await uow.ToDoItems.Select(t => new ToDoByIdQuery.Result(t))
-                    .SingleOrDefaultAsync(t => t.Id == request.Id, cancellationToken);
-            }
+            await using var uow = new ToDoContext(_options);
+            return await uow.ToDoItems.Where(t => t.Id == request.Id).Select(t => new ToDoByIdQuery.Result(t)).SingleOrDefaultAsync(cancellationToken);
         }
     }
 }

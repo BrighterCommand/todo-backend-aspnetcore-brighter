@@ -40,13 +40,23 @@ namespace ToDoTests
             throw new NotImplementedException();
         }
 
-        public void ClearPostBox(params Guid[] posts)
+        public void ClearOutbox(params Guid[] posts)
         {
             throw new NotImplementedException();
         }
 
-        public Task ClearPostBoxAsync(IEnumerable<Guid> posts, bool continueOnCapturedContext = false,
+        public void ClearOutbox(int amountToClear = 100, int minimumAge = 5000)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task ClearOutboxAsync(IEnumerable<Guid> posts, bool continueOnCapturedContext = false,
             CancellationToken cancellationToken = new CancellationToken())
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ClearAsyncOutbox(int amountToClear = 100, int minimumAge = 5000, bool useBulk = false)
         {
             throw new NotImplementedException();
         }

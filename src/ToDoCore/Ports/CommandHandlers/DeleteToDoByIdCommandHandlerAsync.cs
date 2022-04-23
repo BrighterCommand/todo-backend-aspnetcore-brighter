@@ -25,7 +25,7 @@ namespace ToDoCore.Ports.CommandHandlers
         public override async Task<DeleteToDoByIdCommand> HandleAsync(DeleteToDoByIdCommand command,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            using (var uow = new ToDoContext(_dbContextOptions))
+            await using (var uow = new ToDoContext(_dbContextOptions))
             {
                 var repository = new ToDoItemRepositoryAsync(uow);
                 await repository.DeleteAsync(command.ToDoId, cancellationToken);

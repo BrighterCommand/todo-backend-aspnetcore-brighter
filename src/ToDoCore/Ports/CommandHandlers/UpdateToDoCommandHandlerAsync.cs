@@ -31,7 +31,7 @@ namespace ToDoCore.Ports.CommandHandlers
         {
             string title;
 
-            using (var uow = new ToDoContext(_options))
+            await using (var uow = new ToDoContext(_options))
             {
                 var repository = new ToDoItemRepositoryAsync(uow);
                 var toDoItem = await repository.GetAsync(command.ToDoId, cancellationToken);

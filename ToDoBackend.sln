@@ -1,17 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26228.10
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32328.378
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{9F074231-7B85-46E7-9445-39B6D9E7B40F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ToDoCore", "src\ToDoCore\ToDoCore.csproj", "{9D6585BF-8E23-4B8F-AD91-E039C696AA63}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ToDoApi", "src\ToDoApi\ToDoApi.csproj", "{40172447-5ED5-4401-AAAB-C670C2FD257A}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ToDoTests", "test\ToDoTests\ToDoTests.csproj", "{0854EE15-DA4B-4C23-8358-D0D49C160E74}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ToDoApp", "src\ToDoApp\ToDoApp.csproj", "{EEEE3EA1-914F-4D7A-96F6-128CF08CBDF9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToDoApi", "src\ToDoApi\ToDoApi.csproj", "{0F23F7EF-B6DA-43E6-BD71-7D34DDBEDB40}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,11 +35,18 @@ Global
 		{EEEE3EA1-914F-4D7A-96F6-128CF08CBDF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EEEE3EA1-914F-4D7A-96F6-128CF08CBDF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EEEE3EA1-914F-4D7A-96F6-128CF08CBDF9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F23F7EF-B6DA-43E6-BD71-7D34DDBEDB40}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F23F7EF-B6DA-43E6-BD71-7D34DDBEDB40}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F23F7EF-B6DA-43E6-BD71-7D34DDBEDB40}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F23F7EF-B6DA-43E6-BD71-7D34DDBEDB40}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{0854EE15-DA4B-4C23-8358-D0D49C160E74} = {9F074231-7B85-46E7-9445-39B6D9E7B40F}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8BDDBE70-8424-49CC-BA84-ADCD5CEBE440}
 	EndGlobalSection
 EndGlobal
