@@ -24,15 +24,13 @@ namespace ToDoCore.Ports.QueryHandlers
         public override async Task<ToDoQueryAll.Result> ExecuteAsync(ToDoQueryAll request,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            using (var uow = new ToDoContext(_options))
-            {
-                var items = await uow.ToDoItems
-                    .Skip((request.PageNumber - 1) * request.PageSize)
-                    .Take(request.PageSize)
-                    .Select(i => new ToDoByIdQuery.Result(i)).ToListAsync(cancellationToken: cancellationToken);
+            await using var uow = new ToDoContext(_options);
+            var items = await uow.ToDoItems
+                .Skip((request.PageNumber - 1) * request.PageSize)
+                .Take(request.PageSize)
+                .Select(i => new ToDoByIdQuery.Result(i)).ToListAsync(cancellationToken: cancellationToken);
 
-                return new ToDoQueryAll.Result(items);
-            }
+            return new ToDoQueryAll.Result(items);
         }
     }
 }

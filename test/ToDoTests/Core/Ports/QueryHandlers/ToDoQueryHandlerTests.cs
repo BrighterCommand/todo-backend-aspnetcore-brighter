@@ -26,10 +26,10 @@ namespace ToDoTests.Core.Ports.QueryHandlers
                 .Options;
 
             var toDoItem = new ToDoItem {Title = "Make test pass", Completed = false, Order = 523};
-            using (var context = new ToDoContext(options))
+            await using (var context = new ToDoContext(options))
             {
                 context.ToDoItems.Add(toDoItem);
-                context.SaveChanges();
+                await context.SaveChangesAsync();
             }
 
             var retriever = new ToDoByIdQueryHandlerAsync(options);
@@ -54,14 +54,14 @@ namespace ToDoTests.Core.Ports.QueryHandlers
                 .UseInMemoryDatabase("Retrieving_tasks_from_database")
                 .Options;
 
-            using (var context = new ToDoContext(options))
+            await using (var context = new ToDoContext(options))
             {
                 context.ToDoItems.Add(new ToDoItem {Title = "Make test pass 1"});
                 context.ToDoItems.Add(new ToDoItem {Title = "Make test pass 2"});
                 context.ToDoItems.Add(new ToDoItem {Title = "Make test pass 3"});
                 context.ToDoItems.Add(new ToDoItem {Title = "Make test pass 4"});
                 context.ToDoItems.Add(new ToDoItem {Title = "Make test pass 5"});
-                context.SaveChanges();
+                await context.SaveChangesAsync();
             }
 
             var retriever = new ToDoQueryAllHandlerAsync(options);
