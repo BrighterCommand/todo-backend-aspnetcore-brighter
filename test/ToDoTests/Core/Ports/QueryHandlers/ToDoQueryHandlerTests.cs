@@ -22,7 +22,7 @@ namespace ToDoTests.Core.Ports.QueryHandlers
 
             */
             var options = new DbContextOptionsBuilder<ToDoContext>()
-                .UseInMemoryDatabase("Retrieving_tasks_from_database")
+                .UseInMemoryDatabase("Retrieving_tasks_from_database_test1")
                 .Options;
 
             var toDoItem = new ToDoItem {Title = "Make test pass", Completed = false, Order = 523};
@@ -51,7 +51,7 @@ namespace ToDoTests.Core.Ports.QueryHandlers
 
             */
             var options = new DbContextOptionsBuilder<ToDoContext>()
-                .UseInMemoryDatabase("Retrieving_tasks_from_database")
+                .UseInMemoryDatabase("Retrieving_tasks_from_database_test2")
                 .Options;
 
             await using (var context = new ToDoContext(options))
